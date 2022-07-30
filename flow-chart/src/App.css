@@ -1,0 +1,9 @@
+button {
+  text-align: center;
+  width: 12rem;
+  height: 3rem;
+  font-size: 1.3rem;
+  background: pink;
+  margin: 2rem;
+  cursor: pointer;
+}

@@ -5,7 +5,10 @@ import ReactFlow, {
   applyNodeChanges,
   Background,
   Controls,
+  useReactFlow,
+  ReactFlowProvider,
 } from "react-flow-renderer";
+import "./App.css";
 
 const initialNodes = [
   {
@@ -57,6 +60,7 @@ const initialEdges = [
   
 ];
 
+
 function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
@@ -75,27 +79,49 @@ function Flow() {
     (connection) => setEdges((edgs) => addEdge(connection,edges)),
     [setEdges]
   );
+  
+  let nodeCount = 10;
+  const reactFlowInstance = useReactFlow();
+  const addNode = useCallback( () => {
+    const id = `${++nodeCount}`;
+    const newNode = {
+      id,
+      position: {
+        x: Math.random() * 200,
+        y: Math.random() * 200
+      },
+      data: {
+        label: `Node ${id}`
+      }
+    }
+    reactFlowInstance.addNodes(newNode);
+  }, []);
 
   return (
-    <ReactFlow
-      style={{ width: "100vw", height: "90vh" }}
-      nodes={nodes}
-      edges={edges}
-      onNodesChange = {onNodesChange}
-      onEdgesChange = {onEdgesChange}
-      onConnect = {onConnect}
-      fitView
-    >
-      <Background />
-      <Controls />
-    </ReactFlow>
+    <>
+      <button onClick={addNode}>Add Node</button>
+      <ReactFlow
+        style={{ width: "100vw", height: "90vh" }}
+        nodes={nodes}
+        edges={edges}
+        onNodesChange={onNodesChange}
+        onEdgesChange={onEdgesChange}
+        onConnect={onConnect}
+        fitView
+      >
+        <Background />
+        <Controls />
+      </ReactFlow>
+    </>
   );
 }
 
 function App() {
   return (
     <div className="App">
-      <Flow />
+      <ReactFlowProvider>
+        <Flow />
+      </ReactFlowProvider>
     </div>
   );
 }
