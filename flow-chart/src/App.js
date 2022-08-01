@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import ReactFlow, {
   addEdge,
   applyEdgeChanges,
@@ -10,18 +10,28 @@ import ReactFlow, {
 } from "react-flow-renderer";
 import "./App.css";
 
+
+function Input() {
+  return (
+    <div style={{width: "100%", height: "100%"}}>
+        <textarea type="text" placeholder="type.." style={{height: "80%", width: "85%", marginTop: "0.3rem", outline: "none", border: "none", padding: "none"}}></textarea>
+    </div>
+  )
+}
 const initialNodes = [
   {
     id: "1",
     type: "input",
     data: { label: "Input Node" },
     position: { x: 250, y: 25 },
+    className:"abc",
+    style: {background: "red"}
   },
 
   {
     id: "2",
     // you can also pass a React component as a label
-    data: { label: <div>Default Node</div> },
+    data: { label: <Input/> },
     position: { x: 100, y: 125 },
   },
   {
@@ -64,7 +74,8 @@ const initialEdges = [
 function Flow() {
   const [nodes, setNodes] = useState(initialNodes);
   const [edges, setEdges] = useState(initialEdges);
-
+  const [shape, setShape] = useState("rectangle");
+  
   const onNodesChange = useCallback(
     (changes) => setNodes((nds) => applyNodeChanges(changes, nds)),
     [setNodes]
@@ -81,9 +92,48 @@ function Flow() {
   );
   
   let nodeCount = 10;
+  
+
   const reactFlowInstance = useReactFlow();
-  const addNode = useCallback( () => {
+
+  const addNode = useCallback( (value) => {
     const id = `${++nodeCount}`;
+    
+    var Style = "";
+    if (value == "circle") {
+      Style = {
+        width: "100px",
+        height: "100px",
+        backgroundColor: "#eab8ef",
+        borderRadius: "50%",
+      };
+    } else if (value == "triangle") {
+      Style = {
+        backgroundColor: "#003BDE",
+	      clipPath: "polygon(50% 0%,100% 50%,50% 100%,0% 50%)",
+	      width: "100px",
+	      height: "100px"
+      };
+    } else if (value == "rectangle") {
+      Style = {
+        background: "purple",
+      };
+    }
+    else if (value == "square") {
+      Style = {
+        height: "100px",
+        width: "100px",
+        background: "red"
+      }
+    }
+    else if (value == "trapezium") {
+      Style = {
+        width: "200px",
+        height: "200px",
+        background: "red",
+        clipPath: "polygon(0 0, 100% 0, 84% 41%, 16% 41%)"
+      }
+    }
     const newNode = {
       id,
       position: {
@@ -91,15 +141,28 @@ function Flow() {
         y: Math.random() * 200
       },
       data: {
-        label: `Node ${id}`
-      }
+        label: <Input/>
+      },
+      style: Style
     }
     reactFlowInstance.addNodes(newNode);
   }, []);
+  
+  // useEffect(() => { 
+  //   addNode();  
+  // }, [shape])
 
+  const addField = (value) => {
+    setShape(value);
+    addNode(value);
+  }
   return (
     <>
-      <button onClick={addNode}>Add Node</button>
+      <button onClick={() => addField("triangle")}>Add Triangle</button>
+      <button onClick={() => addField("circle")}>Add Circle</button>
+      <button onClick={() => addField("rectangle")}>Add Rectangle</button>
+      <button onClick={() => addField("square")}>Add Square</button>
+      <button onClick={() => addField("trapezium")}>Add Trapezium</button>
       <ReactFlow
         style={{ width: "100vw", height: "90vh" }}
         nodes={nodes}
