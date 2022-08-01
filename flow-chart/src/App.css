@@ -1,9 +1,21 @@
+
+.flowchartWrapper {
+  display: flex;
+}
 button {
   text-align: center;
-  width: 12rem;
+  width: 8rem;
   height: 3rem;
-  font-size: 1.3rem;
-  background: pink;
-  margin: 2rem;
+  text-align: center;
+  background: rgb(35, 173, 166);
+  margin: 1.1rem;
   cursor: pointer;
+}
+
+.buttons-class {
+  justify-content: center;
+  align-items: center;
+  display: flex;
+  width: 20%;
+  flex-direction: column;
 }
